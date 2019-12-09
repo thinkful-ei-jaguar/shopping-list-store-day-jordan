@@ -1,3 +1,4 @@
+'use strict';
 const store = {
   items: [
     { id: cuid(), name: 'apples', checked: false },
@@ -26,9 +27,14 @@ const generateItemElement = function (item) {
         <button class='shopping-item-delete js-item-delete'>
           <span class='button-label'>delete</span>
         </button>
+        <button class='shopping-item-edit js-item-edit'>
+          <span class='button-label'>edit</span>
+        </button>
       </div>
     </li>`;
 };
+
+
 
 const generateShoppingItemsString = function (shoppingList) {
   const items = shoppingList.map((item) => generateItemElement(item));
@@ -126,6 +132,35 @@ const handleDeleteItemClicked = function () {
     render();
   });
 };
+
+
+//generate html for modal to input a new item title after clicking the 'edit' buttonon shopping list 
+function editItemTitleHtml(){
+  return `
+  <div class="edit-title-modal">
+    <input type="text" placeholder="Update Item" class="item-entry-update"></input>
+    <button type="submit" class="update-button">Update</button>
+  </div>
+  `;
+}
+
+//Places an event listener on the edit button
+function handlesEditItemClicked(){
+  $('.js-shopping-list').on('click', '.js-item-edit', event => {
+    editItemTitleHtml();
+    let updatedItem = $('.item-entry-update').val();
+    $('.item-entry-undate').val(' ');
+    const id = getItemIdFromElement(event.currentTarget);
+    handleUpdateButtonClicked();
+  });
+}
+
+//Places event listener on the update button fo whwen its clicked 
+function handleUpdateButtonClicked(){
+  $('.js-shopping-list').on('click', '.update-button', event => {
+
+  });
+}
 
 /**
  * Toggles the store.hideCheckedItems property
