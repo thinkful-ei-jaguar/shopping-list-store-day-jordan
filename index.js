@@ -13,7 +13,9 @@ const generateItemElement = function (item) {
   let itemTitle = `<span class='shopping-item shopping-item__checked'>${item.name}</span>`;
   if (!item.checked) {
     itemTitle = `
-     <span class='shopping-item'>${item.name}</span>
+     <form class="js-edit-item">
+      <input class="shopping-item" type="text" value="${item.name}"/>
+     </form>
     `;
   }
 
@@ -133,34 +135,10 @@ const handleDeleteItemClicked = function () {
   });
 };
 
-
-//generate html for modal to input a new item title after clicking the 'edit' buttonon shopping list 
-function editItemTitleHtml(){
-  return `
-  <div class="edit-title-modal">
-    <input type="text" placeholder="Update Item" class="item-entry-update"></input>
-    <button type="submit" class="update-button">Update</button>
-  </div>
-  `;
-}
-
-//Places an event listener on the edit button
-function handlesEditItemClicked(){
-  $('.js-shopping-list').on('click', '.js-item-edit', event => {
-    editItemTitleHtml();
-    let updatedItem = $('.item-entry-update').val();
-    $('.item-entry-undate').val(' ');
-    const id = getItemIdFromElement(event.currentTarget);
-    handleUpdateButtonClicked();
-  });
-}
-
-//Places event listener on the update button fo whwen its clicked 
-function handleUpdateButtonClicked(){
-  $('.js-shopping-list').on('click', '.update-button', event => {
-
-  });
-}
+const editListItemName = function (id, itemName) {
+  const item = store.items.find(item => item.id === id);
+  item.name = itemName;
+};
 
 /**
  * Toggles the store.hideCheckedItems property
@@ -180,6 +158,22 @@ const handleToggleFilterClick = function () {
   });
 };
 
+//event listener for handling the form input submit 
+const handleEditShoppingItemSubmit = function () {
+  //on submitting the input 
+  $('.js-shopping-list').on('submit', '.js-edit-item', event => {
+    event.preventDefault();
+    //get it of the element that the submit even happened on
+    const id = getItemIdFromElement(event.currentTarget);
+    //from the id get the name 
+    const itemName = $(event.currentTarget).find('.shopping-item').val();
+    //cal the edit function with the id and item variables
+    editListItemName(id, itemName);
+    //call render function to render the page again
+    render();
+  });
+};
+
 /**
  * This function will be our callback when the
  * page loads. It is responsible for initially 
@@ -195,6 +189,7 @@ const handleShoppingList = function () {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleToggleFilterClick();
+  handleEditShoppingItemSubmit();
 };
 
 // when the page loads, call `handleShoppingList`
